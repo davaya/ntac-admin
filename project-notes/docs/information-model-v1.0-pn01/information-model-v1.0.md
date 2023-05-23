@@ -256,13 +256,11 @@ The correspondence between JADN types and the metamodel types shown in the diagr
 The primary differences between the NIEM and JADN metamodels are:
 1. All properties are local to the type in which they are defined
 2. All properties have both numeric and string identifiers, allowing flexible message formats
-3. JADN is truly technology-agnostic, supporting messages in any data format.  NIEM 5 and CMF
-are RDF-based and support only RDF data formats (XML/RDF and JSON-LD).
-4. Some constraints such as multiplicity notation, anonymous property types and type inheritance
+3. Some constraints such as multiplicity notation, anonymous property types and type inheritance
 are syntactic sugar "extensions" that are pre-processed into core definitions.  This both
 simplifies the message processing needed at runtime and clearly distinguishes the
-information model itself from features used to ease integration with other design
-methods and tools. NIEM does not define a "minimum viable" XSD feature set that must be supported.
+information model itself from functions used to ease its integration with other design
+methodologies.
 
 ## 3.2 Information Model
 
@@ -308,7 +306,7 @@ here for ease of comparison with the corresponding Information Model definitions
         <!-- 78 properties omitted - explore them at https://niem.github.io/model/5.0/nc/PersonType/ -->
         <xs:element ref="nc:PersonHomeContactInformation" minOccurs="0" maxOccurs="unbounded"/>
 ```
-**Person type JADN Reference Model**:
+**PersonType JADN Reference Model**:
 ```
 Person = Record                                     // A data type for a human being
   1 accent      PersonAccentText [0..*]
@@ -324,7 +322,7 @@ Notes:
 omitted. Prefixes are needed only when referencing types defined in other namespaces.
 The nc: prefix is permitted in type references from the nc: namespace for stylistic reasons,
 but type definitions cannot have prefixes.
-3. Properties are enclosed in \<xs:sequence> indicating that they are an ordered list. The IM "Record" type
+3. Properties are enclosed in <xs:sequence> indicating that they are an ordered list. The IM "Record" type
 is a list where properties have fixed ordinal positions. This is a reminder that inserting items anywhere
 other than at the end is a breaking change requiring a new model version. If the items are a set rather
 than a list, the IM type would be "Map", existing items can be reordered, and new items can be inserted
@@ -355,7 +353,7 @@ properties for PersonType, and specified that the two selected properties must e
         <xs:element ref="nc:PersonAgeMeasure" minOccurs="1" maxOccurs="1"/>
         <xs:element ref="nc:PersonName" minOccurs="1" maxOccurs="1"/>
 ```
-**Person type JADN Message Model**:
+**PersonType JADN Message Model**:
 ```
 Person = Record                             // A data type for a human being.
    1 name         PersonName
@@ -394,7 +392,7 @@ An information model in JADN format is also a NIEM message that can be serialize
 other format. The Person reference and message examples shown above are serialized as IDL (text) data.
 The JSON equivalent is:
 
-**Person type JADN message model, JSON serialized:**
+**Person message information model serialized as JSON data:**
 
 ```json
 {
@@ -480,6 +478,7 @@ numeric property IDs are more concise in transmission than short property names 
 as long names for readability.
 
 ## 4.2 Data Formats
+
 The property description says:
 - *The type of the property will define the value’s structure (e.g., free text or a specific date format).*
 
@@ -496,15 +495,37 @@ The following values are equivalent:
 Format options for several kinds of information, for example IP address, MAC address, UUID, etc. can
 specify a verbose text value to use in messages instead of the concise information value.
 
-## 4.3 Class Extension and Augmentation
+## 4.3 Ordered Lists
 
-## 4.4 Composition
+*5/23 meeting: It is difficult to manage ordered lists in RDF (and by extension RDF/XML and JSON-LD), but
+sometimes they are needed and must be modeled. Pixels in an image, steps in a cooking recipe,
+GPS coordinates of a land survey boundary, and items in a numbered list such as the sections
+of this document are all examples of use cases where order is significant.*
+
+*An information model treats both UML isOrdered and isUnique collection attributes as first-class
+modeling elements.  The JADN ArrayOf type is an ordered, non-unique list of items unless
+otherwise specified.*
+
+## 4.4 Class Extension and Augmentation
+
+## 4.5 Roles
+
+*Crash driver example applies roles to Person.  IM "roles" belong to a larger context, not the Person.
+An "operating vehicle" will have driver and passenger slots for cars in addition to vehicle
+information (manufacturer, model, VIN, ...).  Extends to airplane with person slots for
+pilot, flight officer, attendants, air marshall, passengers.  Person data is included in the
+operating vehicle, which accommodates both copies for each "role" and references for a single
+person in multiple roles.*
+
+*Cardinality constraints conflict with roles, should not be a problem in IM.*
+
+## 4.6 Composition
 
 *biometric domain example*
 
-## 4.5 Serialization Styles
+## 4.7 Serialization Styles
 
-## 4.6 Application Schema Resolution
+## 4.8 Application Schema Resolution
 
 * *each domain creates one or more reference schemas*
 * *an application supports a single message schema*
